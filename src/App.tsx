@@ -1,7 +1,8 @@
-import React from 'react';
-import { Button } from './components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Badge } from './components/ui/badge';
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Button } from './components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
+import { Badge } from './components/ui/badge'
 import { 
   Heart, 
   Shield, 
@@ -18,47 +19,53 @@ import {
   MessageCircle,
   Menu,
   X
-} from 'lucide-react';
-import { BookingDialog } from './components/BookingDialog';
-import { WhatsAppWidget } from './components/WhatsAppWidget';
-import { PaymentMethods } from './components/PaymentMethods';
-import { ContactForm } from './components/ContactForm';
+} from 'lucide-react'
+import { BookingDialog } from './components/BookingDialog'
+import { WhatsAppWidget } from './components/WhatsAppWidget'
+import { PaymentMethods } from './components/PaymentMethods'
+import { ContactForm } from './components/ContactForm'
+import { LanguageSwitcher } from './components/LanguageSwitcher'
+import { VideoConsultation } from './components/VideoConsultation'
+import { Toaster } from './components/ui/toaster'
+import './i18n/config'
 
 function App() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showVideoConsultation, setShowVideoConsultation] = useState(false)
+  const { t } = useTranslation()
 
   const services = [
     {
       icon: <Activity className="h-8 w-8 text-primary" />,
-      title: "Back Pain Treatment",
-      description: "Specialized care for chronic back pain, herniated discs, and spinal alignment issues."
+      title: t('services.backPain.title'),
+      description: t('services.backPain.description')
     },
     {
       icon: <Zap className="h-8 w-8 text-primary" />,
-      title: "Sports Injury Recovery",
-      description: "Expert rehabilitation for athletes and sports-related injuries with personalized recovery plans."
+      title: t('services.sportsInjury.title'),
+      description: t('services.sportsInjury.description')
     },
     {
       icon: <Heart className="h-8 w-8 text-primary" />,
-      title: "Post-Surgery Rehabilitation",
-      description: "Comprehensive recovery programs following orthopedic and neurological surgeries."
+      title: t('services.postSurgery.title'),
+      description: t('services.postSurgery.description')
     },
     {
       icon: <Shield className="h-8 w-8 text-primary" />,
-      title: "Arthritis Management",
-      description: "Pain management and mobility improvement for various forms of arthritis."
+      title: t('services.arthritis.title'),
+      description: t('services.arthritis.description')
     },
     {
       icon: <Users className="h-8 w-8 text-primary" />,
-      title: "Pediatric Physiotherapy",
-      description: "Specialized treatment for children with developmental and movement disorders."
+      title: 'Pediatric Physiotherapy',
+      description: 'Specialized treatment for children with developmental and movement disorders.'
     },
     {
       icon: <Award className="h-8 w-8 text-primary" />,
-      title: "Neurological Rehabilitation",
-      description: "Recovery support for stroke, Parkinson's, and other neurological conditions."
+      title: t('services.neurological.title'),
+      description: t('services.neurological.description')
     }
-  ];
+  ]
 
   const testimonials = [
     {
@@ -82,49 +89,44 @@ function App() {
       text: "Professional and caring approach. My shoulder mobility improved significantly within 6 weeks of treatment.",
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
     }
-  ];
+  ]
 
   const pricingPlans = [
     {
-      name: "Single Consultation",
-      price: "₹800",
+      name: t('pricing.basic.title'),
+      price: t('pricing.basic.price'),
       amount: 800,
-      duration: "45 minutes",
-      features: [
-        "Detailed assessment",
-        "Personalized exercise plan",
-        "Follow-up recommendations",
-        "Digital exercise guide"
-      ]
+      duration: t('pricing.basic.duration'),
+      features: t('pricing.basic.features', { returnObjects: true }) as string[]
     },
     {
-      name: "Treatment Package",
-      price: "₹3,500",
-      amount: 3500,
-      duration: "5 sessions",
+      name: t('pricing.premium.title'),
+      price: t('pricing.premium.price'),
+      amount: 1500,
+      duration: t('pricing.premium.duration'),
       popular: true,
-      features: [
-        "5 consultation sessions",
-        "Progress tracking",
-        "Customized treatment plan",
-        "WhatsApp support",
-        "Exercise video library"
-      ]
+      features: t('pricing.premium.features', { returnObjects: true }) as string[]
     },
     {
-      name: "Complete Recovery",
-      price: "₹6,500",
+      name: t('pricing.comprehensive.title'),
+      price: t('pricing.comprehensive.price'),
       amount: 6500,
-      duration: "10 sessions",
-      features: [
-        "10 consultation sessions",
-        "Comprehensive assessment",
-        "24/7 support access",
-        "Nutrition guidance",
-        "Recovery guarantee"
-      ]
+      duration: t('pricing.comprehensive.duration'),
+      features: t('pricing.comprehensive.features', { returnObjects: true }) as string[]
     }
-  ];
+  ]
+
+  if (showVideoConsultation) {
+    return (
+      <VideoConsultation
+        consultationId="demo-consultation"
+        patientName="Demo Patient"
+        doctorName="Dr. Sharma"
+        scheduledTime="2:00 PM"
+        onEndConsultation={() => setShowVideoConsultation(false)}
+      />
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -139,18 +141,20 @@ function App() {
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-muted-foreground hover:text-primary transition-colors">Services</a>
-              <a href="#about" className="text-muted-foreground hover:text-primary transition-colors">About</a>
-              <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">Testimonials</a>
-              <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
-              <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</a>
+              <a href="#services" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.services')}</a>
+              <a href="#about" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.about')}</a>
+              <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.testimonials')}</a>
+              <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.pricing')}</a>
+              <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.contact')}</a>
+              <LanguageSwitcher />
               <BookingDialog>
-                <Button className="bg-primary hover:bg-primary/90">Book Consultation</Button>
+                <Button className="bg-primary hover:bg-primary/90">{t('hero.bookConsultation')}</Button>
               </BookingDialog>
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center gap-2">
+              <LanguageSwitcher />
               <Button
                 variant="ghost"
                 size="sm"
@@ -165,13 +169,13 @@ function App() {
           {isMenuOpen && (
             <div className="md:hidden py-4 border-t border-border">
               <div className="flex flex-col space-y-4">
-                <a href="#services" className="text-muted-foreground hover:text-primary transition-colors">Services</a>
-                <a href="#about" className="text-muted-foreground hover:text-primary transition-colors">About</a>
-                <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">Testimonials</a>
-                <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
-                <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</a>
+                <a href="#services" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.services')}</a>
+                <a href="#about" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.about')}</a>
+                <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.testimonials')}</a>
+                <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.pricing')}</a>
+                <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.contact')}</a>
                 <BookingDialog>
-                  <Button className="bg-primary hover:bg-primary/90 w-full">Book Consultation</Button>
+                  <Button className="bg-primary hover:bg-primary/90 w-full">{t('hero.bookConsultation')}</Button>
                 </BookingDialog>
               </div>
             </div>
@@ -185,34 +189,34 @@ function App() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in-up">
               <Badge className="mb-4 bg-accent/10 text-accent hover:bg-accent/20">
-                🏥 Trusted by 10,000+ Patients
+                🏥 {t('hero.trustedBy')}
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-                Expert <span className="text-primary">Physiotherapy</span> Care from Home
+                {t('hero.title')} <span className="text-primary">{t('hero.subtitle')}</span>
               </h1>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Get professional physiotherapy treatment through secure online consultations with India's certified physiotherapists. Personalized care, proven results.
+                {t('hero.description')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <BookingDialog>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8 py-6">
                     <MessageCircle className="mr-2 h-5 w-5" />
-                    Book Free Consultation
+                    {t('hero.bookConsultation')}
                   </Button>
                 </BookingDialog>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
                   <Phone className="mr-2 h-5 w-5" />
-                  Call Now: +91 98765 43210
+                  Call Now: {t('contact.info.phone')}
                 </Button>
               </div>
               <div className="flex items-center space-x-8 text-sm text-muted-foreground">
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-accent mr-2" />
-                  Licensed Professionals
+                  {t('hero.certifiedPhysios')}
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-accent mr-2" />
-                  Secure & Private
+                  {t('hero.successRate')}
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-accent mr-2" />
@@ -233,7 +237,7 @@ function App() {
                       <Clock className="h-6 w-6 text-accent" />
                     </div>
                     <div>
-                      <p className="font-semibold text-foreground">Available 24/7</p>
+                      <p className="font-semibold text-foreground">{t('about.availability')}</p>
                       <p className="text-sm text-muted-foreground">Emergency support</p>
                     </div>
                   </div>
@@ -250,10 +254,10 @@ function App() {
           <div className="text-center mb-16">
             <Badge className="mb-4 bg-primary/10 text-primary">Our Specialties</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Comprehensive Physiotherapy Services
+              {t('services.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              From acute injuries to chronic conditions, our certified physiotherapists provide specialized care tailored to your unique needs.
+              {t('services.subtitle')}
             </p>
           </div>
           
@@ -270,7 +274,7 @@ function App() {
                   </CardDescription>
                   <BookingDialog serviceType={service.title}>
                     <Button variant="outline" className="w-full">
-                      Book Consultation
+                      {t('pricing.bookNow')}
                     </Button>
                   </BookingDialog>
                 </CardContent>
@@ -294,10 +298,10 @@ function App() {
             <div>
               <Badge className="mb-4 bg-accent/10 text-accent">Why Choose Us</Badge>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                India's Most Trusted Online Physiotherapy Platform
+                {t('about.title')}
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                With over 15 years of combined experience, our team of certified physiotherapists has helped thousands of patients recover from injuries and improve their quality of life through innovative online treatment methods.
+                {t('about.subtitle')}
               </p>
               
               <div className="grid sm:grid-cols-2 gap-6 mb-8">
@@ -306,7 +310,7 @@ function App() {
                     <Award className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-1">Certified Experts</h3>
+                    <h3 className="font-semibold text-foreground mb-1">15+ {t('about.experience')}</h3>
                     <p className="text-sm text-muted-foreground">Licensed physiotherapists with advanced certifications</p>
                   </div>
                 </div>
@@ -315,7 +319,7 @@ function App() {
                     <Users className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-1">10,000+ Patients</h3>
+                    <h3 className="font-semibold text-foreground mb-1">10,000+ {t('about.patients')}</h3>
                     <p className="text-sm text-muted-foreground">Successfully treated across India</p>
                   </div>
                 </div>
@@ -324,7 +328,7 @@ function App() {
                     <Shield className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-1">95% Success Rate</h3>
+                    <h3 className="font-semibold text-foreground mb-1">95% {t('about.successRate')}</h3>
                     <p className="text-sm text-muted-foreground">Proven treatment outcomes</p>
                   </div>
                 </div>
@@ -333,17 +337,26 @@ function App() {
                     <Clock className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-1">24/7 Support</h3>
+                    <h3 className="font-semibold text-foreground mb-1">{t('about.availability')}</h3>
                     <p className="text-sm text-muted-foreground">Round-the-clock assistance</p>
                   </div>
                 </div>
               </div>
               
-              <BookingDialog>
-                <Button size="lg" className="bg-primary hover:bg-primary/90">
-                  Learn More About Our Team
+              <div className="flex gap-4">
+                <BookingDialog>
+                  <Button size="lg" className="bg-primary hover:bg-primary/90">
+                    {t('hero.learnMore')}
+                  </Button>
+                </BookingDialog>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => setShowVideoConsultation(true)}
+                >
+                  🎥 Demo Video Call
                 </Button>
-              </BookingDialog>
+              </div>
             </div>
           </div>
         </div>
@@ -355,10 +368,10 @@ function App() {
           <div className="text-center mb-16">
             <Badge className="mb-4 bg-accent/10 text-accent">Patient Stories</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              What Our Patients Say
+              {t('testimonials.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Real stories from real patients who have experienced remarkable recovery through our online physiotherapy services.
+              {t('testimonials.subtitle')}
             </p>
           </div>
           
@@ -398,10 +411,10 @@ function App() {
           <div className="text-center mb-16">
             <Badge className="mb-4 bg-primary/10 text-primary">Transparent Pricing</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Affordable Healthcare for Everyone
+              {t('pricing.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Choose the plan that best fits your recovery needs. All plans include personalized treatment and ongoing support.
+              {t('pricing.subtitle')}
             </p>
           </div>
           
@@ -410,7 +423,7 @@ function App() {
               <Card key={index} className={`relative ${plan.popular ? 'border-primary shadow-lg scale-105' : 'border-border'}`}>
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                    <Badge className="bg-primary text-primary-foreground">{t('pricing.mostPopular')}</Badge>
                   </div>
                 )}
                 <CardHeader className="text-center pb-8">
@@ -434,7 +447,7 @@ function App() {
                       className={`w-full ${plan.popular ? 'bg-primary hover:bg-primary/90' : 'bg-secondary hover:bg-secondary/80 text-foreground'}`}
                       size="lg"
                     >
-                      Choose Plan
+                      {t('pricing.bookNow')}
                     </Button>
                   </BookingDialog>
                 </CardContent>
@@ -454,10 +467,10 @@ function App() {
             <div>
               <Badge className="mb-4 bg-accent/10 text-accent">Get In Touch</Badge>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                Ready to Start Your Recovery Journey?
+                {t('contact.title')}
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Book your consultation today and take the first step towards a pain-free life. Our team is ready to help you achieve your health goals.
+                {t('contact.subtitle')}
               </p>
               
               <div className="space-y-6">
@@ -467,7 +480,7 @@ function App() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Phone</p>
-                    <p className="text-muted-foreground">+91 98765 43210</p>
+                    <p className="text-muted-foreground">{t('contact.info.phone')}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -476,16 +489,16 @@ function App() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Email</p>
-                    <p className="text-muted-foreground">info@physiocareindia.com</p>
+                    <p className="text-muted-foreground">{t('contact.info.email')}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="bg-primary/10 p-3 rounded-full">
-                    <MapPin className="h-6 w-6 text-primary" />
+                    <Clock className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Serving</p>
-                    <p className="text-muted-foreground">All major cities across India</p>
+                    <p className="font-semibold text-foreground">Hours</p>
+                    <p className="text-muted-foreground">{t('contact.info.hours')}</p>
                   </div>
                 </div>
               </div>
@@ -495,7 +508,7 @@ function App() {
                 <div className="space-y-3">
                   <BookingDialog>
                     <Button className="w-full bg-primary hover:bg-primary/90">
-                      📅 Book Consultation
+                      📅 {t('hero.bookConsultation')}
                     </Button>
                   </BookingDialog>
                   <Button 
@@ -544,35 +557,35 @@ function App() {
             </div>
             
             <div>
-              <h3 className="font-semibold mb-4">Services</h3>
+              <h3 className="font-semibold mb-4">{t('nav.services')}</h3>
               <ul className="space-y-2 text-muted">
-                <li>Back Pain Treatment</li>
-                <li>Sports Injury Recovery</li>
-                <li>Post-Surgery Rehab</li>
-                <li>Arthritis Management</li>
+                <li>{t('services.backPain.title')}</li>
+                <li>{t('services.sportsInjury.title')}</li>
+                <li>{t('services.postSurgery.title')}</li>
+                <li>{t('services.arthritis.title')}</li>
                 <li>Pediatric Physiotherapy</li>
-                <li>Neurological Rehab</li>
+                <li>{t('services.neurological.title')}</li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Company</h3>
               <ul className="space-y-2 text-muted">
-                <li>About Us</li>
+                <li>{t('nav.about')}</li>
                 <li>Our Team</li>
                 <li>Careers</li>
                 <li>Privacy Policy</li>
                 <li>Terms of Service</li>
-                <li>Contact</li>
+                <li>{t('nav.contact')}</li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Contact Info</h3>
               <ul className="space-y-2 text-muted">
-                <li>+91 98765 43210</li>
-                <li>info@physiocareindia.com</li>
-                <li>Available 24/7</li>
+                <li>{t('contact.info.phone')}</li>
+                <li>{t('contact.info.email')}</li>
+                <li>{t('contact.info.hours')}</li>
                 <li>Emergency Support</li>
               </ul>
               <Button 
@@ -593,8 +606,11 @@ function App() {
 
       {/* WhatsApp Widget */}
       <WhatsAppWidget />
+      
+      {/* Toast Notifications */}
+      <Toaster />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
