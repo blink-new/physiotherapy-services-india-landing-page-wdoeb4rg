@@ -1,8 +1,6 @@
 import React from 'react';
 import { Button } from './components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Input } from './components/ui/input';
-import { Textarea } from './components/ui/textarea';
 import { Badge } from './components/ui/badge';
 import { 
   Heart, 
@@ -21,6 +19,10 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import { BookingDialog } from './components/BookingDialog';
+import { WhatsAppWidget } from './components/WhatsAppWidget';
+import { PaymentMethods } from './components/PaymentMethods';
+import { ContactForm } from './components/ContactForm';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -86,6 +88,7 @@ function App() {
     {
       name: "Single Consultation",
       price: "₹800",
+      amount: 800,
       duration: "45 minutes",
       features: [
         "Detailed assessment",
@@ -97,6 +100,7 @@ function App() {
     {
       name: "Treatment Package",
       price: "₹3,500",
+      amount: 3500,
       duration: "5 sessions",
       popular: true,
       features: [
@@ -110,6 +114,7 @@ function App() {
     {
       name: "Complete Recovery",
       price: "₹6,500",
+      amount: 6500,
       duration: "10 sessions",
       features: [
         "10 consultation sessions",
@@ -139,7 +144,9 @@ function App() {
               <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">Testimonials</a>
               <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
               <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</a>
-              <Button className="bg-primary hover:bg-primary/90">Book Consultation</Button>
+              <BookingDialog>
+                <Button className="bg-primary hover:bg-primary/90">Book Consultation</Button>
+              </BookingDialog>
             </div>
 
             {/* Mobile menu button */}
@@ -163,7 +170,9 @@ function App() {
                 <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">Testimonials</a>
                 <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
                 <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</a>
-                <Button className="bg-primary hover:bg-primary/90 w-full">Book Consultation</Button>
+                <BookingDialog>
+                  <Button className="bg-primary hover:bg-primary/90 w-full">Book Consultation</Button>
+                </BookingDialog>
               </div>
             </div>
           )}
@@ -185,10 +194,12 @@ function App() {
                 Get professional physiotherapy treatment through secure online consultations with India's certified physiotherapists. Personalized care, proven results.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8 py-6">
-                  <MessageCircle className="mr-2 h-5 w-5" />
-                  Book Free Consultation
-                </Button>
+                <BookingDialog>
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8 py-6">
+                    <MessageCircle className="mr-2 h-5 w-5" />
+                    Book Free Consultation
+                  </Button>
+                </BookingDialog>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
                   <Phone className="mr-2 h-5 w-5" />
                   Call Now: +91 98765 43210
@@ -254,9 +265,14 @@ function App() {
                   <CardTitle className="text-xl">{service.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
+                  <CardDescription className="text-base leading-relaxed mb-4">
                     {service.description}
                   </CardDescription>
+                  <BookingDialog serviceType={service.title}>
+                    <Button variant="outline" className="w-full">
+                      Book Consultation
+                    </Button>
+                  </BookingDialog>
                 </CardContent>
               </Card>
             ))}
@@ -323,9 +339,11 @@ function App() {
                 </div>
               </div>
               
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
-                Learn More About Our Team
-              </Button>
+              <BookingDialog>
+                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                  Learn More About Our Team
+                </Button>
+              </BookingDialog>
             </div>
           </div>
         </div>
@@ -387,7 +405,7 @@ function App() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
             {pricingPlans.map((plan, index) => (
               <Card key={index} className={`relative ${plan.popular ? 'border-primary shadow-lg scale-105' : 'border-border'}`}>
                 {plan.popular && (
@@ -411,16 +429,21 @@ function App() {
                       </li>
                     ))}
                   </ul>
-                  <Button 
-                    className={`w-full ${plan.popular ? 'bg-primary hover:bg-primary/90' : 'bg-secondary hover:bg-secondary/80 text-foreground'}`}
-                    size="lg"
-                  >
-                    Choose Plan
-                  </Button>
+                  <BookingDialog planType={plan.name} amount={plan.amount}>
+                    <Button 
+                      className={`w-full ${plan.popular ? 'bg-primary hover:bg-primary/90' : 'bg-secondary hover:bg-secondary/80 text-foreground'}`}
+                      size="lg"
+                    >
+                      Choose Plan
+                    </Button>
+                  </BookingDialog>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {/* Payment Methods */}
+          <PaymentMethods />
         </div>
       </section>
 
@@ -466,44 +489,34 @@ function App() {
                   </div>
                 </div>
               </div>
+
+              <div className="mt-8 p-6 bg-white rounded-lg shadow-lg">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div className="space-y-3">
+                  <BookingDialog>
+                    <Button className="w-full bg-primary hover:bg-primary/90">
+                      📅 Book Consultation
+                    </Button>
+                  </BookingDialog>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => window.open('tel:+919876543210')}
+                  >
+                    📞 Call Now
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => window.open('https://wa.me/919876543210?text=Hi, I need help with physiotherapy consultation', '_blank')}
+                  >
+                    💬 WhatsApp Chat
+                  </Button>
+                </div>
+              </div>
             </div>
             
-            <Card className="bg-white border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-2xl">Book Your Consultation</CardTitle>
-                <CardDescription>Fill out the form below and we'll get back to you within 24 hours.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">First Name</label>
-                    <Input placeholder="Enter your first name" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Last Name</label>
-                    <Input placeholder="Enter your last name" />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Email</label>
-                  <Input type="email" placeholder="Enter your email" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Phone Number</label>
-                  <Input type="tel" placeholder="Enter your phone number" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Condition/Concern</label>
-                  <Textarea placeholder="Describe your condition or what you'd like help with" rows={4} />
-                </div>
-                <Button className="w-full bg-primary hover:bg-primary/90" size="lg">
-                  Book Free Consultation
-                </Button>
-                <p className="text-sm text-muted-foreground text-center">
-                  By submitting this form, you agree to our privacy policy and terms of service.
-                </p>
-              </CardContent>
-            </Card>
+            <ContactForm />
           </div>
         </div>
       </section>
@@ -562,7 +575,10 @@ function App() {
                 <li>Available 24/7</li>
                 <li>Emergency Support</li>
               </ul>
-              <Button className="mt-4 bg-primary hover:bg-primary/90">
+              <Button 
+                className="mt-4 bg-primary hover:bg-primary/90"
+                onClick={() => window.open('https://wa.me/919876543210?text=Hi, I need help with physiotherapy consultation', '_blank')}
+              >
                 <MessageCircle className="mr-2 h-4 w-4" />
                 WhatsApp Us
               </Button>
@@ -574,6 +590,9 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* WhatsApp Widget */}
+      <WhatsAppWidget />
     </div>
   );
 }
